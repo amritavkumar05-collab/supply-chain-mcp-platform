@@ -187,7 +187,7 @@ def render_metric_cards(df: pd.DataFrame) -> None:
     )
     col2.metric(
         label="Average Port Dwell (Days)",
-        value=f"{float(average_dwell):,.1f}",
+        value=f"{float(average_dwell):,.0f}",
         help="Mean days between ARRIVE_PORT and DEPART_PORT for filtered containers.",
     )
     col3.metric(
@@ -411,7 +411,7 @@ def main() -> None:
         st.caption("• Transformation Layer: dbt Core")
         st.caption("• Pattern Matching: MATCH_RECOGNIZE")
         st.caption("• Dashboard: Streamlit Native Cache")
-        
+
     filtered_df = enriched_df[
         enriched_df["carrier_name"].isin(selected_carriers)
         & enriched_df["origin_country"].isin(selected_origins)
