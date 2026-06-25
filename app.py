@@ -168,7 +168,11 @@ def enrich_action_list(df: pd.DataFrame, daily_demurrage_rate: float) -> pd.Data
     )
 
 
-def format_currency(value: float) -> str:
+def format_currency(value: float, compact: bool = False) -> str:
+    if compact and value >= 1_000_000:
+        return f"${value / 1_000_000:.1f}M"
+    if compact and value >= 1_000:
+        return f"${value / 1_000:.1f}K"
     return f"${value:,.0f}"
 
 
@@ -182,7 +186,7 @@ def render_metric_cards(df: pd.DataFrame) -> None:
     col1, col2, col3, col4 = st.columns(4)
     col1.metric(
         label="Total Demurrage at Risk",
-        value=format_currency(total_demurrage),
+        value=format_currency(total_demurrage, compact=True),
         help="Estimated demurrage exposure for days exceeding the 5-day SLA.",
     )
     col2.metric(
@@ -197,7 +201,7 @@ def render_metric_cards(df: pd.DataFrame) -> None:
     )
     col4.metric(
         label="Total Cargo Value at Risk",
-        value=format_currency(total_cargo_value),
+        value=format_currency(total_cargo_value, compact=True),
         help="Estimated total cargo value for all bottlenecked containers.",
     )
 
@@ -248,12 +252,6 @@ def render_origin_chart(df: pd.DataFrame) -> None:
         use_container_width=True,
         color="#FF6B35",
         horizontal=True,
-    )
-
-    st.bar_chart(
-        origin_summary.set_index("origin_country")["container_count"],
-        use_container_width=True,
-        color="#FF6B35",
     )
 
 
