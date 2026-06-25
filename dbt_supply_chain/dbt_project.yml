@@ -1,0 +1,37 @@
+name: dbt_supply_chain
+version: 1.0.0
+config-version: 2
+
+profile: dbt_supply_chain
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: target
+clean-targets:
+  - target
+  - dbt_packages
+
+vars:
+  raw_database: SUPPLY_CHAIN
+  raw_schema: RAW
+  raw_movement_events_table: MOVEMENT_EVENTS
+
+models:
+  dbt_supply_chain:
+    bronze:
+      +schema: bronze
+      +materialized: view
+      +tags: ["bronze", "staging"]
+    silver:
+      +schema: silver
+      +materialized: table
+      +tags: ["silver", "core"]
+    gold:
+      +schema: gold
+      +materialized: table
+      +tags: ["gold", "mart"]

@@ -1,0 +1,30 @@
+# Copy to ~/.dbt/profiles.yml and update credentials before running dbt.
+
+dbt_supply_chain:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      # Your full Snowflake locator (e.g., xy12345.us-east-2.aws or abc12345)
+      account: "zivslxl-gs67275"
+      
+      # Your Snowflake login username
+      user: "amrita"
+      
+      # Your Snowflake login password
+      password: "Dumboo$psbb9744"
+      
+      # The custom security role we created in the setup script
+      role: "SUPPLY_CHAIN_ANALYST_ROLE"
+      
+      # The target database we generated
+      database: SUPPLY_CHAIN_DB
+      
+      # The custom warehouse we allocated for compute
+      warehouse: "ANALYTICS_WH"
+      
+      # We target the BRONZE schema for dbt to build its staging layers
+      schema: BRONZE
+      
+      threads: 4
+      client_session_keep_alive: false

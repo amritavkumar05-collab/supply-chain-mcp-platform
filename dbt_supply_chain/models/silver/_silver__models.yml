@@ -1,0 +1,64 @@
+version: 2
+
+models:
+  - name: fct_movement_events
+    description: >
+      Silver fact model containing cleaned movement events with invalid rows removed.
+      Rows are dropped when required fields are null, event types are unknown, or
+      event_time is not strictly chronological within a container.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:  
+            combination_of_columns:
+              - container_id
+              - event_time
+              - event_type
+    columns:
+      - name: movement_event_key
+        description: Surrogate key for a unique movement event row.
+        tests:
+          - not_null
+          - unique
+      - name: container_id
+        description: Unique container identifier.
+        tests:
+          - not_null
+      - name: carrier_name
+        description: Shipping carrier responsible for the container.
+        tests:
+          - not_null
+      - name: event_time
+        description: Timestamp when the logistics event occurred.
+        tests:
+          - not_null
+      - name: event_type
+        description: Validated logistics event type.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - DEPART_ORIGIN
+                  - ARRIVE_PORT
+                  - PORT_DWELL
+                  - DEPART_PORT
+                  - ARRIVE_DC
+      - name: estimated_value
+        description: Estimated cargo value in USD.
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"
+              config:
+                where: "estimated_value is not null"
+      - name: origin_country
+        description: Country where the shipment originated.
+        tests:
+          - not_null
+      - name: event_sequence_number
+        description: Strictly increasing sequence number per container after chronology filtering.
+        tests:
+          - not_null
+      - name: _dbt_loaded_at
+        description: Timestamp when the record was staged by dbt.

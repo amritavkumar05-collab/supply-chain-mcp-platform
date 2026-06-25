@@ -1,0 +1,26 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Raw logistics event stream loaded from Parquet into Snowflake.
+    database: "{{ var('raw_database') }}"
+    schema: "{{ var('raw_schema') }}"
+    loader: external_stage
+    tables:
+      - name: movement_events
+        identifier: "{{ var('raw_movement_events_table') }}"
+        description: >
+          Raw container movement events sourced from data/raw_movement_events.parquet.
+        columns:
+          - name: container_id
+            description: Unique container identifier.
+          - name: carrier_name
+            description: Shipping carrier responsible for the container.
+          - name: event_time
+            description: Timestamp when the logistics event occurred.
+          - name: event_type
+            description: Milestone or logging event type for the container journey.
+          - name: estimated_value
+            description: Estimated cargo value in USD at the time of the event.
+          - name: origin_country
+            description: Country where the shipment originated.

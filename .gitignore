@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.streamlit/secrets.toml
+dbt_supply_chain/target/
+dbt_supply_chain/dbt_packages/
+dbt_supply_chain/logs/
+data/
+*.parquet

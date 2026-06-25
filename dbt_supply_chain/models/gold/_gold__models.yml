@@ -1,0 +1,52 @@
+version: 2
+
+models:
+  - name: mart_port_dwell_bottlenecks
+    description: >
+      Gold analytics mart identifying containers stuck at port for more than five days
+      between ARRIVE_PORT and DEPART_PORT using Snowflake MATCH_RECOGNIZE with
+      non-contiguous pattern matching.
+    columns:
+      - name: container_id
+        description: Container identified as a port dwell bottleneck.
+        tests:
+          - not_null
+          - unique
+      - name: carrier_name
+        description: Carrier associated with the bottlenecked container.
+        tests:
+          - not_null
+      - name: origin_country
+        description: Origin country for the bottlenecked shipment.
+        tests:
+          - not_null
+      - name: depart_origin_at
+        description: Timestamp of the DEPART_ORIGIN milestone.
+        tests:
+          - not_null
+      - name: arrive_port_at
+        description: Timestamp of the ARRIVE_PORT milestone.
+        tests:
+          - not_null
+      - name: depart_port_at
+        description: Timestamp of the DEPART_PORT milestone.
+        tests:
+          - not_null
+      - name: port_dwell_days
+        description: Number of days between ARRIVE_PORT and DEPART_PORT.
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "port_dwell_days > 5"
+      - name: intermediate_event_count
+        description: Count of non-milestone logging events captured between milestones.
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "intermediate_event_count >= 0"
+      - name: estimated_value_at_arrival
+        description: Estimated cargo value recorded at port arrival.
+        tests:
+          - not_null

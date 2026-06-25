@@ -1,0 +1,42 @@
+version: 2
+
+models:
+  - name: stg_movement_events
+    description: >
+      Bronze staging model that maps raw Parquet movement event fields into typed,
+      consistently named columns for downstream Medallion processing.
+    columns:
+      - name: container_id
+        description: Unique container identifier.
+        tests:
+          - not_null
+      - name: carrier_name
+        description: Shipping carrier responsible for the container.
+        tests:
+          - not_null
+      - name: event_time
+        description: Timestamp when the logistics event occurred.
+        tests:
+          - not_null
+      - name: event_type
+        description: Normalized logistics event type.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - DEPART_ORIGIN
+                  - ARRIVE_PORT
+                  - PORT_DWELL
+                  - DEPART_PORT
+                  - ARRIVE_DC
+      - name: estimated_value
+        description: Estimated cargo value in USD.
+        tests:
+          - not_null
+      - name: origin_country
+        description: Country where the shipment originated.
+        tests:
+          - not_null
+      - name: _dbt_loaded_at
+        description: Timestamp when the record was staged by dbt.
