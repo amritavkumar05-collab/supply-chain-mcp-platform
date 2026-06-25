@@ -13,3 +13,4 @@ Raw Events → Snowflake RAW Layer → dbt Medallion Architecture (Bronze → Si
 
 ## Tech Stack
 - Snowflake, dbt, Python, Streamlit
+![Supply Chain Operations Dashboard](assets/dashboard.png)
