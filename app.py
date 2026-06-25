@@ -214,14 +214,15 @@ def render_carrier_chart(df: pd.DataFrame) -> None:
         df.groupby("carrier_name")["demurrage_at_risk_usd"]
         .sum()
         .reset_index()
-        .sort_values("demurrage_at_risk_usd", ascending=False)
-        .head(10)
+        .sort_values("demurrage_at_risk_usd", ascending=True)
+        .tail(10)
     )
 
     st.bar_chart(
         carrier_summary.set_index("carrier_name")["demurrage_at_risk_usd"],
         use_container_width=True,
         color="#FF4B4B",
+        horizontal=True,
     )
 
 
@@ -238,8 +239,15 @@ def render_origin_chart(df: pd.DataFrame) -> None:
         .count()
         .reset_index()
         .rename(columns={"container_id": "container_count"})
-        .sort_values("container_count", ascending=False)
-        .head(10)
+        .sort_values("container_count", ascending=True)
+        .tail(10)
+    )
+
+    st.bar_chart(
+        origin_summary.set_index("origin_country")["container_count"],
+        use_container_width=True,
+        color="#FF6B35",
+        horizontal=True,
     )
 
     st.bar_chart(
@@ -397,7 +405,13 @@ def main() -> None:
 
         st.divider()
         st.caption(f"Demurrage rate: {format_currency(daily_demurrage_rate)} / day over SLA")
-
+        st.divider()
+        st.caption("⚡ Platform Architecture")
+        st.caption("• Data Warehouse: Snowflake (Bronze/Silver/Gold)")
+        st.caption("• Transformation Layer: dbt Core")
+        st.caption("• Pattern Matching: MATCH_RECOGNIZE")
+        st.caption("• Dashboard: Streamlit Native Cache")
+        
     filtered_df = enriched_df[
         enriched_df["carrier_name"].isin(selected_carriers)
         & enriched_df["origin_country"].isin(selected_origins)
