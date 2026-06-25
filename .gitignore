@@ -8,3 +8,4 @@ dbt_supply_chain/dbt_packages/
 dbt_supply_chain/logs/
 data/
 *.parquet
+logs/
